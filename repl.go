@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 )
 type cliCommand struct {
 	name string
 	description string
-	callback func() error
+	callback func(*pokedex.PokedexConfig) error
 }
 
 func cleanInput(input string) string {
@@ -18,7 +20,7 @@ func cleanInput(input string) string {
 	return cleanedInput
 }
 
-func startRepl(){
+func startRepl(cfg *pokedex.PokedexConfig){
 commandsMap := map[string]cliCommand{
 	"help": {
 		name:"Help Message",
@@ -33,8 +35,14 @@ commandsMap := map[string]cliCommand{
 	"clear": {
         name:        "Clear",
         description: "Clear the current screen",
-        callback:    clear,
+        callback:    clearScreen,
     },
+	"map": {
+        name:        "Locations",
+        description: "Get the locations on the pokedex world",
+        callback:    command_map,
+    },
+	
 	}
 	reader := bufio.NewScanner(os.Stdin)
 	fmt.Printf("pokedoxcli> ")

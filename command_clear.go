@@ -5,10 +5,12 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+
+	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 )
 
 
-func clearScreen() error{
+func clearScreen(cfg *pokedex.PokedexConfig) error{
 	switch runtime.GOOS {
 	case "linux","darwin":
 		cmd := exec.Command("clear")

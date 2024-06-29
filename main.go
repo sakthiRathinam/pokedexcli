@@ -1,10 +1,11 @@
 package main
 
+import "github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 
-const HOST_URL = "https://pokeapi.co/api/v2/"
 
 
 func main() {
-	
+	pokedexClientObj := pokedex.PokedexClient{Client: pokedex.CreateClient()}
+	pokedexConfig := pokedex.PokedexConfig{PokedexClient:pokedexClientObj,Location:pokedex.APICurrentState{PreviousURL: nil,NextURL: nil}}
 	startRepl()
 }

@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
-func DisplayHelpText() error{
+import (
+	"fmt"
+
+	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
+)
+func DisplayHelpText(cfg *pokedex.PokedexConfig) error{
 	fmt.Printf(
         "Welcome to pokedexcli! These are the available commands: \n",
     )
@@ -10,3 +14,5 @@ func DisplayHelpText() error{
     fmt.Println(".exit    - Closes the terminal screen")
 	return nil
 }
+
+
