@@ -42,6 +42,11 @@ commandsMap := map[string]cliCommand{
         description: "Get the locations on the pokedex world",
         callback:    command_map,
     },
+	"mapb": {
+        name:        "Locations",
+        description: "Get the previous on the pokedex world",
+        callback:    command_mapb,
+    },
 	
 	}
 	reader := bufio.NewScanner(os.Stdin)
@@ -50,10 +55,13 @@ commandsMap := map[string]cliCommand{
 		text := cleanInput(reader.Text())
 		cliCommand, exists := commandsMap[text]
 		if exists{
-			err := cliCommand.callback()
+			err := cliCommand.callback(cfg)
 			if err != nil{
-				break
+				fmt.Println(err)
 			}
+		}
+		if text == "exit"{
+			break
 		}
 		fmt.Printf("pokedoxcli> ")
 	}

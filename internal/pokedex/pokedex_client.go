@@ -40,11 +40,29 @@ func CreateClient() http.Client{
 	return http.Client{Timeout: time.Minute}
 }
 
-func (pokedexClient *PokedexClient) GetLocationsNext(cfg *PokedexConfig,next bool) (PokedexLocationsResponse,error) {
+func (pokedexClient *PokedexClient) GetLocationsNext(cfg *PokedexConfig) (PokedexLocationsResponse,error) {
 	locationUrl := BaseUrl + "location"
-	var locationsResp PokedexLocationsResponse
 	 
-	response,err := http.Get(locationUrl)
+	if cfg.Location.NextURL != nil{
+		locationUrl = *cfg.Location.NextURL
+	}
+
+	return _getLocations(locationUrl)
+}
+
+
+func (pokedexClient *PokedexClient) GetLocationsPrevious(cfg *PokedexConfig) (PokedexLocationsResponse,error) {
+	pokedexResponse := PokedexLocationsResponse{}
+	if cfg.Location.PreviousURL != nil {
+		return _getLocations(*cfg.Location.PreviousURL)
+	}
+	return pokedexResponse,errors.New("no previous location available")
+}
+
+func _getLocations(locationURL string) (PokedexLocationsResponse,error) {
+	var locationsResp PokedexLocationsResponse
+
+	response,err := http.Get(locationURL)
 	if err != nil {
 		return locationsResp,errors.New("error occured while fetching location")
 	}

@@ -1,27 +1,42 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 )
 
 func command_map(cfg *pokedex.PokedexConfig) error {
-	locationsResp,err := cfg.PokedexClient.GetLocations()
+	locationsResp,err := cfg.PokedexClient.GetLocationsNext(cfg)
 	if err != nil {
-		return errors.New("error occured while getting the locations")
+		return err
 	}
-	fmt.Println("Pokedex world locations")
-	if locationsResp.Next != nil {
-		cfg.Location.NextURL = locationsResp.Next
-	}
+
+	cfg.Location.NextURL = locationsResp.Next
+	cfg.Location.PreviousURL = locationsResp.Previous
 	
-	if locationsResp.Previous != nil {
-		cfg.Location.PreviousURL = locationsResp.Previous
+	_printLocations(locationsResp)
+	return nil
+}
+
+
+func command_mapb(cfg *pokedex.PokedexConfig) error {
+	locationsResp,err := cfg.PokedexClient.GetLocationsPrevious(cfg)
+	if err != nil {
+		return err
 	}
+
+	cfg.Location.NextURL = locationsResp.Next
+	cfg.Location.PreviousURL = locationsResp.Previous
+    
+	_printLocations(locationsResp)
+	return nil
+}
+
+
+func _printLocations(locationsResp pokedex.PokedexLocationsResponse) {
+	fmt.Println("Pokedex world locations")
 	for _,location := range locationsResp.Locations {
 		fmt.Println(location.Name)
 	}
-	return nil
 }
