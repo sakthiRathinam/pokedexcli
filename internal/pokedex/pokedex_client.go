@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/sakthiRathinam/pokedexcli/internal/pokedexcache"
 )
 
 type APICurrentState struct {
@@ -34,6 +36,7 @@ type PokedexClient struct {
 type PokedexConfig struct {
 	PokedexClient PokedexClient
 	Location APICurrentState
+	PokedexCache pokedexcache.CacheStore
 }
 
 func CreateClient() http.Client{
@@ -46,22 +49,29 @@ func (pokedexClient *PokedexClient) GetLocationsNext(cfg *PokedexConfig) (Pokede
 	if cfg.Location.NextURL != nil{
 		locationUrl = *cfg.Location.NextURL
 	}
-
-	return _getLocations(locationUrl)
+	return _getLocations(locationUrl,cfg)
+	
 }
 
 
 func (pokedexClient *PokedexClient) GetLocationsPrevious(cfg *PokedexConfig) (PokedexLocationsResponse,error) {
 	pokedexResponse := PokedexLocationsResponse{}
 	if cfg.Location.PreviousURL != nil {
-		return _getLocations(*cfg.Location.PreviousURL)
+		return _getLocations(*cfg.Location.PreviousURL,cfg)
 	}
 	return pokedexResponse,errors.New("no previous location available")
 }
 
-func _getLocations(locationURL string) (PokedexLocationsResponse,error) {
+func _getLocations(locationURL string,cfg *PokedexConfig) (PokedexLocationsResponse,error){
+	cacheEntry,err := cfg.PokedexCache.GetCacheResponse(locationURL)
+	if err != nil {
+		return _getLocationsHittingPokeAPI(locationURL,&cfg.PokedexCache)
+	}
+	return _convertBytesToLocationResp(cacheEntry.Val)
+}
+func _getLocationsHittingPokeAPI(locationURL string,pokedexCache *pokedexcache.CacheStore) (PokedexLocationsResponse,error) {
+	
 	var locationsResp PokedexLocationsResponse
-
 	response,err := http.Get(locationURL)
 	if err != nil {
 		return locationsResp,errors.New("error occured while fetching location")
@@ -73,15 +83,29 @@ func _getLocations(locationURL string) (PokedexLocationsResponse,error) {
 		return locationsResp,errors.New("error occured while parsing location")
 	}
 
-	jsonMarshal := json.Unmarshal(responseBody,&locationsResp)
-	if jsonMarshal != nil {
-		fmt.Println(err)
-		return locationsResp,errors.New("error occured while unmarshal location")
+	locationResp,err := _convertBytesToLocationResp(responseBody)
+	if err != nil {
+		return locationResp,errors.New("error occured while parsing json")
 	}
-
-	return locationsResp,nil
+	stored := pokedexCache.StoreCacheEntry(locationURL,responseBody)
+	if stored != nil {
+		fmt.Println("storing the cache failed")
+	}
+	return locationResp,nil
 
 }
+
+
+func _convertBytesToLocationResp(responseBody []byte) (PokedexLocationsResponse,error){
+	var locationsResp PokedexLocationsResponse
+	jsonMarshal := json.Unmarshal(responseBody,&locationsResp)
+	if jsonMarshal != nil {
+		return locationsResp,errors.New("error occured while unmarshal location")
+	}
+	return locationsResp,nil
+}
+
+
 
 
 
