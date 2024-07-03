@@ -28,10 +28,10 @@ func (c *CacheStore) GetCacheResponse(key string) (CacheEntry, error) {
 	return cacheEntry, nil
 }
 
-func (c *CacheStore) StoreCacheEntry(key string, val []byte) error {
+func (c *CacheStore) StoreCacheEntry(key string, val []byte,expireAfter int) error {
 	c.RwMutex.Lock()
 	defer c.RwMutex.Unlock()
-	expiredAt := time.Now().Add(3 * time.Second)
+	expiredAt := time.Now().Add(time.Duration(expireAfter) * time.Second)
 	cacheEntry := CacheEntry{Val:val,expiredAt: expiredAt}
 	c.Store[key] = cacheEntry
 	return nil

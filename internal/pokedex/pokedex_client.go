@@ -87,7 +87,7 @@ func _getLocationsHittingPokeAPI(locationURL string,pokedexCache *pokedexcache.C
 	if err != nil {
 		return locationResp,errors.New("error occured while parsing json")
 	}
-	stored := pokedexCache.StoreCacheEntry(locationURL,responseBody)
+	stored := pokedexCache.StoreCacheEntry(locationURL,responseBody,10)
 	if stored != nil {
 		fmt.Println("storing the cache failed")
 	}
