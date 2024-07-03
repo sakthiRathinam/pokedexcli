@@ -19,8 +19,8 @@ type CacheStore struct {
 }
 
 func (c *CacheStore) GetCacheResponse(key string) (CacheEntry, error) {
-	c.RwMutex.Lock()
-	defer c.RwMutex.Unlock()
+	c.RwMutex.RLock()
+	defer c.RwMutex.RUnlock()
 	cacheEntry, ok := c.Store[key]
 	if !ok{
 		return cacheEntry,errors.New("key not found")
@@ -29,9 +29,9 @@ func (c *CacheStore) GetCacheResponse(key string) (CacheEntry, error) {
 }
 
 func (c *CacheStore) StoreCacheEntry(key string, val []byte) error {
-	c.RwMutex.RLock()
-	defer c.RwMutex.RUnlock()
-	expiredAt := time.Now().Add(20 * time.Second)
+	c.RwMutex.Lock()
+	defer c.RwMutex.Unlock()
+	expiredAt := time.Now().Add(3 * time.Second)
 	cacheEntry := CacheEntry{Val:val,expiredAt: expiredAt}
 	c.Store[key] = cacheEntry
 	return nil
@@ -50,6 +50,15 @@ func (c *CacheStore) IsExpired(key string) (expired bool, err error) {
 	}
 	return false, nil
 }
+
+func (c *CacheStore) RemoveCacheEntry(key string) error {
+	c.RwMutex.Lock()
+	defer c.RwMutex.Unlock()
+	delete(c.Store,key)
+	return nil
+}
+
+
 
 func CreateCacheStore() CacheStore {
 	store := map[string]CacheEntry{}
