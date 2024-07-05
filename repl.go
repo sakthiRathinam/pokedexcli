@@ -12,16 +12,23 @@ import (
 type cliCommand struct {
 	name string
 	description string
-	callback func(*pokedex.PokedexConfig) error
+	callback func(*pokedex.PokedexConfig, string) error
 }
 
-func cleanInput(input string) string {
-	removeSpace := strings.TrimSpace(input)
-	cleanedInput := strings.ToLower(removeSpace)
-	return cleanedInput
+func cleanInput(input string) (string,string) {
+	splitBySpace := strings.Split(input, " ")
+	for index,elem := range splitBySpace{
+		removeSpace := strings.TrimSpace(elem)
+		cleanedInput := strings.ToLower(removeSpace)
+		splitBySpace[index] = cleanedInput
+	}
+	if len(splitBySpace) < 2 {
+		return splitBySpace[0],""
+	}
+	return splitBySpace[0],splitBySpace[1]
 }
 
-func displayLenOfCache(cfg *pokedex.PokedexConfig) error{
+func displayLenOfCache(cfg *pokedex.PokedexConfig, pokedexElem string) error{
 	fmt.Println(len(cfg.PokedexCache.Store))
 	return nil
 }
@@ -58,17 +65,24 @@ commandsMap := map[string]cliCommand{
         description: "display the length of the cache",
         callback:    displayLenOfCache,
     }, // only for debugging
+	"explore": {
+        name:        "Explore pokemons",
+        description: "explore pokemons for that particular location",
+        callback:    command_get_pokemons,
+    }, // only for debugging
 	
 	}
+	
 	reader := bufio.NewScanner(os.Stdin)
 	closeChan := make(chan int)
 	go pokedexcache.ReapLoop(&cfg.PokedexCache,&closeChan,3)
 	fmt.Printf("pokedoxcli> ")
 	for reader.Scan(){
-		text := cleanInput(reader.Text())
+		text,pokedexElem := cleanInput(reader.Text())
+		
 		cliCommand, exists := commandsMap[text]
 		if exists{
-			err := cliCommand.callback(cfg)
+			err := cliCommand.callback(cfg,pokedexElem)
 			if err != nil{
 				fmt.Println(err)
 			}
@@ -81,3 +95,6 @@ commandsMap := map[string]cliCommand{
 	}
 
 }
+
+
+

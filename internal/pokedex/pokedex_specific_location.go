@@ -1,5 +1,13 @@
 package pokedex
 
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+)
+
 
 type PokedexSpecificLocationResponse struct {
 	EncounterMethodRates []struct {
@@ -53,4 +61,26 @@ type PokedexSpecificLocationResponse struct {
 		} `json:"version_details"`
 	} `json:"pokemon_encounters"`
 }
+
+
+func (pokedexClient *PokedexClient) GetPokemonOnLoc(cfg *PokedexConfig,location string) (PokedexSpecificLocationResponse,error) {
+	var locationsResp PokedexSpecificLocationResponse
+	pokedexURL := BaseUrl + "location-area/" + location + "/"
+	response,err := http.Get(pokedexURL)
+	if err != nil {
+		return locationsResp,errors.New("error occured while fetching location")
+	}
+
+	responseBody,err := io.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
+		return locationsResp,errors.New("error occured while parsing location")
+	}
+	jsonMarshal := json.Unmarshal(responseBody,&locationsResp)
+	if jsonMarshal != nil {
+		return locationsResp,errors.New("error occured while unmarshal location")
+	}
+	return locationsResp,nil
+}
+
 

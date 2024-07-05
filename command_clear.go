@@ -10,7 +10,7 @@ import (
 )
 
 
-func clearScreen(cfg *pokedex.PokedexConfig) error{
+func clearScreen(cfg *pokedex.PokedexConfig,pokedexElem string) error{
 	switch runtime.GOOS {
 	case "linux","darwin":
 		cmd := exec.Command("clear")
