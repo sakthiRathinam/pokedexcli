@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/sakthiRathinam/pokedexcli/internal/pokedexcache"
 )
 
 
@@ -64,18 +66,41 @@ type PokedexSpecificLocationResponse struct {
 
 
 func (pokedexClient *PokedexClient) GetPokemonOnLoc(cfg *PokedexConfig,location string) (PokedexSpecificLocationResponse,error) {
-	var locationsResp PokedexSpecificLocationResponse
 	pokedexURL := BaseUrl + "location-area/" + location + "/"
-	response,err := http.Get(pokedexURL)
+	return _getPokeOnLoc(pokedexURL,cfg)
+}
+
+func _getPokeOnLoc(locationURL string,cfg *PokedexConfig) (PokedexSpecificLocationResponse,error){
+	cacheEntry,err := cfg.PokedexCache.GetCacheResponse(locationURL)
 	if err != nil {
-		return locationsResp,errors.New("error occured while fetching location")
+		return _getPokeOnLocByHittingPokeAPI(&cfg.PokedexCache,locationURL)
+	}
+	return _convertBytesToPokemonResp(cacheEntry.Val)
+}
+
+
+func _getPokeOnLocByHittingPokeAPI(pokedexCache *pokedexcache.CacheStore,locationURL string) (PokedexSpecificLocationResponse,error) {
+	var locationResp PokedexSpecificLocationResponse;
+	response,err := http.Get(locationURL)
+	if err != nil {
+		return locationResp,errors.New("error occured while fetching location")
 	}
 
 	responseBody,err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println(err)
-		return locationsResp,errors.New("error occured while parsing location")
+		return locationResp,errors.New("error occured while parsing location")
 	}
+	pokedexCache.StoreCacheEntry(locationURL,responseBody,20)
+	jsonMarshal := json.Unmarshal(responseBody,&locationResp)
+	if jsonMarshal != nil {
+		return locationResp,errors.New("error occured while unmarshal location")
+	}
+	return locationResp,nil
+}
+
+func _convertBytesToPokemonResp(responseBody []byte) (PokedexSpecificLocationResponse,error){
+	var locationsResp PokedexSpecificLocationResponse
 	jsonMarshal := json.Unmarshal(responseBody,&locationsResp)
 	if jsonMarshal != nil {
 		return locationsResp,errors.New("error occured while unmarshal location")
