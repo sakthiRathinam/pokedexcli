@@ -85,6 +85,11 @@ commandsMap := map[string]cliCommand{
         description: "Display all the pokemons in our bucket",
         callback:    commandPokedex,
     }, 
+	"release": {
+        name:        "release",
+        description: "Release the pokemon world to their native",
+        callback:    commandRelease,
+    }, 
 	
 	}
 	
