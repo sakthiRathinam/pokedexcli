@@ -69,7 +69,22 @@ commandsMap := map[string]cliCommand{
         name:        "Explore pokemons",
         description: "explore pokemons for that particular location",
         callback:    command_get_pokemons,
-    }, // only for debugging
+    }, 
+	"catch": {
+        name:        "Explore pokemons",
+        description: "explore pokemons for that particular location",
+        callback:    command_catch,
+    }, 
+	"inspect": {
+        name:        "Inspect pokemon",
+        description: "Inspect the pokemon and caught or not, If caught then display the details",
+        callback:    command_inspect,
+    }, 
+	"pokedex": {
+        name:        "Pokemons",
+        description: "Display all the pokemons in our bucket",
+        callback:    command_pokedex,
+    }, 
 	
 	}
 	

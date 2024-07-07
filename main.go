@@ -11,6 +11,7 @@ func main() {
 	pokedexClientObj := pokedex.PokedexClient{Client: pokedex.CreateClient()}
 	pokedexResponseCache := pokedexcache.CreateCacheStore()
 	
-	pokedexConfig := pokedex.PokedexConfig{PokedexClient:pokedexClientObj,Location:pokedex.APICurrentState{PreviousURL: nil,NextURL: nil},PokedexCache: pokedexResponseCache}
+	pokemonStore := map[string]pokedex.Pokemon{}
+	pokedexConfig := pokedex.PokedexConfig{PokedexClient:pokedexClientObj,Location:pokedex.APICurrentState{PreviousURL: nil,NextURL: nil},PokedexCache: pokedexResponseCache,PokemonStore:pokemonStore}
 	startRepl(&pokedexConfig)
 }
