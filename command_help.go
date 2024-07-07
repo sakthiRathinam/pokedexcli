@@ -5,7 +5,7 @@ import (
 
 	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 )
-func DisplayHelpText(cfg *pokedex.PokedexConfig,pokedexElem string) error{
+func displayHelpText(cfg *pokedex.PokedexConfig,pokedexElem string) error{
 	fmt.Printf(
         "Welcome to pokedexcli! These are the available commands: \n",
     )

@@ -8,7 +8,7 @@ import (
 
 
 
-func command_pokedex(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandPokedex(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	if len(cfg.PokemonStore) == 0 {
 		fmt.Println("Your pokedex collection is empty")
 		return nil

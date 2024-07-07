@@ -7,7 +7,7 @@ import (
 )
 
 
-func command_get_pokemons(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandGetPokemons(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	pokedexResp,err := cfg.PokedexClient.GetPokemonOnLoc(cfg,pokedexElem)
 	if err != nil {
 		return err

@@ -6,7 +6,7 @@ import (
 	"github.com/sakthiRathinam/pokedexcli/internal/pokedex"
 )
 
-func command_map(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandMap(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	locationsResp,err := cfg.PokedexClient.GetLocationsNext(cfg)
 	if err != nil {
 		return err
@@ -20,7 +20,7 @@ func command_map(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 }
 
 
-func command_mapb(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandMapb(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	locationsResp,err := cfg.PokedexClient.GetLocationsPrevious(cfg)
 	if err != nil {
 		return err

@@ -9,7 +9,7 @@ import (
 )
 
 
-func command_catch(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandCatch(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	pokedexResp,err := cfg.PokedexClient.GetPokemonDetails(cfg,pokedexElem)
 	if err != nil {
 		return err

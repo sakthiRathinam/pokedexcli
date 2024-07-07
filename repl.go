@@ -38,12 +38,12 @@ commandsMap := map[string]cliCommand{
 	"help": {
 		name:"Help Message",
 		description:"List all the commands with the description",
-		callback: DisplayHelpText,
+		callback: displayHelpText,
 	},
 	"exit": {
         name:        "exit",
         description: "Exit the Pokedex",
-        callback:    CommandExit,
+        callback:    commandExit,
     },
 	"clear": {
         name:        "Clear",
@@ -53,12 +53,12 @@ commandsMap := map[string]cliCommand{
 	"map": {
         name:        "Locations",
         description: "Get the locations on the pokedex world",
-        callback:    command_map,
+        callback:    commandMap,
     },
 	"mapb": {
         name:        "Locations",
         description: "Get the previous on the pokedex world",
-        callback:    command_mapb,
+        callback:    commandMapb,
     },
 	"cachel": {
         name:        "Cache Lenght",
@@ -68,22 +68,22 @@ commandsMap := map[string]cliCommand{
 	"explore": {
         name:        "Explore pokemons",
         description: "explore pokemons for that particular location",
-        callback:    command_get_pokemons,
+        callback:    commandGetPokemons,
     }, 
 	"catch": {
         name:        "Explore pokemons",
         description: "explore pokemons for that particular location",
-        callback:    command_catch,
+        callback:    commandCatch,
     }, 
 	"inspect": {
         name:        "Inspect pokemon",
         description: "Inspect the pokemon and caught or not, If caught then display the details",
-        callback:    command_inspect,
+        callback:    commandInspect,
     }, 
 	"pokedex": {
         name:        "Pokemons",
         description: "Display all the pokemons in our bucket",
-        callback:    command_pokedex,
+        callback:    commandPokedex,
     }, 
 	
 	}

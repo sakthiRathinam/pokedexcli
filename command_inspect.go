@@ -7,7 +7,7 @@ import (
 )
 
 
-func command_inspect(cfg *pokedex.PokedexConfig,pokedexElem string) error {
+func commandInspect(cfg *pokedex.PokedexConfig,pokedexElem string) error {
 	pokemon, ok := cfg.PokemonStore[pokedexElem]
 	if !ok {
 		fmt.Println("you have not caught that pokemon")
